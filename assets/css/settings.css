@@ -1,0 +1,75 @@
+:root {
+    --color1: #7B85CA;
+    --color2: #001ac5;
+    --color3: #6b7fdc;
+    --color4: #2C75FF;
+    --color5: #8F90A8;
+    --text-color1:#ffffff;
+    --text-color2:#000000;
+}
+@font-face {
+    font-family: 'Audiowide';
+    src: url('/asset/fonts/Audiowide-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+main {
+    grid-area: main;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+}
+
+.container {
+    width: 80%;
+    color: var(--text-color1);
+    background-color: var(--color3);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.25);
+     
+}
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+#clear_highscore_btn {
+    background-color: var(--color4);
+    color: var(--text-color1);
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: "Audiowide", sans-serif;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+    width: 100%;
+}
+
+#clear_highscore_btn:hover {
+    background-color: var(--color2);
+}
+
+
+input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+}
+
+input[type="checkbox"] {
+    margin: 10px 0;
+}
+
+
+@media (max-width: 800px) {
+    .container {       
+        padding: 10px;
+        margin: 10px;
+    }
+
+    #clear_highscore_btn {
+        font-size: 14px;
+    }
+}

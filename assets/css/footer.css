@@ -1,0 +1,52 @@
+:root {
+    --color1: #7B85CA;
+    --color2: #001ac5;
+    --color3: #6b7fdc;
+    --color4: #2C75FF;
+    --color5: #8F90A8;
+    --text-color1:#ffffff;
+    --text-color2:#000000;
+}
+@font-face {
+    font-family: 'Audiowide';
+    src: url('/assets/fonts/Audiowide-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+footer{
+    background:linear-gradient(to top,var(--color1), var(--color3));  
+    border-top: 1px solid var(--text-color1);
+    color: white;
+
+    padding: 5px;
+    text-align: center;
+    font-size: 14px;
+    width: auto;
+    margin-top: auto;
+}
+footer>.info{
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+}
+
+footer ul {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+footer li {
+    list-style: none;
+
+}
+
+footer li a {
+    color: var(--text-color1);
+    transition:  transform 0.2s ease;
+}
+
+footer li a:hover {
+    transform: scale(1.2);
+}
