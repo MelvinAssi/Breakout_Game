@@ -6,6 +6,9 @@
     --text-color1:#ffffff;
     --text-color2:#000000;
 }
+body{
+    background-color: #000000;
+}
 @font-face {
     font-family: 'Audiowide';
     src: url('/assets/fonts/Audiowide-Regular.ttf') format('truetype');

@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     var lastTime = 0; 
     var interval = 10;
+    let score=0;
+    let highscore = localStorage.getItem('highscore') || '0';
+    document.getElementById('highscoretxt').textContent = 'Highscore: ' + highscore;
 
     var gameOver=false;
     
@@ -35,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         y: gridStep / 2 ,
         vx: 7,
         vy: 2,
-        radius: gridStep/2,
+        radius: gridStep/8,
         color: "blue",
         draw: function () {
             ctx.beginPath();
@@ -63,18 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    let brick={
-        x: gridStep / 2, 
-        y: gridStep / 2,
-        color: "brown",
-        draw:function(){
-            ctx.beginPath();
-            ctx.rect(gridStep, gridStep, 2*gridStep, gridStep);
-            ctx.closePath();
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        }
-    }
+
     let paddle = {
         x: canvas.width / 2 - (gridStep * 2),
         y: canvas.width - (gridStep * 2),
@@ -100,12 +92,89 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    let brickMap ;
+    const rows = 5;
+    const cols = 8;
+
+    
+
+    function buildWall(){
+        brickMap = new Map();
+        for (let r = 0; r < rows; r++) {
+            for (let c = 1; c <= cols; c++) {
+                brickMap.set(`${r}-${c}`, { present: true, color: "brown" });
+            }
+        }
+
+    }
+
+    
+    function drawBricks() {
+        brickMap.forEach((brick, key) => {
+            if (brick.present) {
+                let [r, c] = key.split('-').map(Number);
+                let x = c * gridStep * 2;
+                let y = r * gridStep;
+                ctx.beginPath();
+                ctx.rect(x, y, gridStep * 2, gridStep);
+                ctx.strokeRect(x, y, gridStep * 2, gridStep);
+                ctx.closePath();
+                ctx.fillStyle = brick.color;
+                ctx.fill();
+            }
+        });
+    }
+
+    function checkBrickCollision() {
+        brickMap.forEach((brick, key) => {
+            if (brick.present) {
+                let [r, c] = key.split('-').map(Number);
+                let brickX = c * gridStep * 2;
+                let brickY = r * gridStep;
+                if (ball.x + ball.radius > brickX && ball.x - ball.radius < brickX + gridStep * 2 &&
+                    ball.y + ball.radius > brickY && ball.y - ball.radius < brickY + gridStep) {
+                    
+                    brickMap.set(key, { present: false, color: "transparent" });
+                    updateScore();
+
+                    if (ball.y > brickY && ball.y < brickY + gridStep) { 
+                        ball.vx = -ball.vx;
+                    }
+    
+                    
+                    if (ball.x > brickX && ball.x < brickX + gridStep * 2) { 
+                        ball.vy = -ball.vy;
+                    }
+                }
+            }
+        });
+        checkWallDestroyed();
+    }
+    function checkWallDestroyed() {
+        let allBricksDestroyed = true;
+
+        brickMap.forEach((brick) => {
+            if (brick.present) {
+                allBricksDestroyed = false;
+            }
+        });
+        if (allBricksDestroyed) {
+            buildWall();
+            score += 50;
+            document.getElementById('scoretxt').textContent = 'Score: ' + score;
+        }
+    }
+    
+
     function startGame(){
         start_screen.style.display="none";
         initGame();
         startAnimation();
     }
     function initGame(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        buildWall();
+        score=0;
         ball.reset();
     }
     function startAnimation() {
@@ -128,13 +197,14 @@ document.addEventListener("DOMContentLoaded", () => {
             lastTime = timestamp;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ball.draw();
-            
+            drawBricks();
             ball.move();
             checkBorderCollision();
-            brick.draw();
+            
             paddle.draw();
             paddle.update();
             checkPaddleCollision();
+            checkBrickCollision();
         
         }
         raf = window.requestAnimationFrame(draw);
@@ -151,17 +221,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
     function checkPaddleCollision() {
-        if (ball.y + ball.vy + ball.radius == paddle.y && ball.y + ball.vy - ball.radius < paddle.y + gridStep) {
-            
-            if (ball.x + ball.vx > paddle.x && ball.x + ball.vx < paddle.x + paddle.length) {                
-                ball.vy = -ball.vy;                
-                const hitPos = (ball.x - (paddle.x + paddle.length / 2)) / (paddle.length / 2); // Calculate hit position
-                ball.vx += hitPos * 2; 
-            }
+        if (ball.y + ball.vy + ball.radius >= paddle.y && 
+            ball.y + ball.vy - ball.radius <= paddle.y + gridStep &&
+            ball.x + ball.radius > paddle.x && 
+            ball.x - ball.radius < paddle.x + paddle.length) {
+            ball.vy = -ball.vy;
+    
+            const hitPos = (ball.x - (paddle.x + paddle.length / 2)) / (paddle.length / 2);
+            ball.vx += hitPos * 2; 
         }
     }
 
-    function updateScore(){     
+
+    function updateScore(){  
+        score += 10;   
+        document.getElementById('scoretxt').textContent = 'Score: ' + score;
+        console.log(highscore)
+        if (score > highscore) {
+            highscore = score;
+            localStorage.setItem('highscore',highscore);
+            document.getElementById('highscoretxt').textContent = 'Highscore: ' + highscore;
+        }
 
     }
     
