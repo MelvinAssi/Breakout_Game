@@ -34,10 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
     var gameOver=false;
     
     let ball = {
-        x: gridStep / 2, 
-        y: gridStep / 2 ,
-        vx: 7,
-        vy: 2,
+        x: gridStep*10, 
+        y: gridStep*10 ,
+        vx: 5,
+        vy: -5,
         radius: gridStep/8,
         color: "blue",
         draw: function () {
@@ -59,10 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         },
         reset : function() {
-            this.x=gridStep / 2;
-            this.y=gridStep / 2;
-            this.vx=7;
-            this.vy=2;
+            this.x=gridStep*10;
+            this.y=gridStep *15;
+            this.vx=5;
+            this.vy=-5;
         }
     };
 
